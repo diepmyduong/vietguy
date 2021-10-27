@@ -1,11 +1,4 @@
-import { Axios } from 'axios';
-
-const api = new Axios({
-  baseURL: `https://cloudsms2.vietguys.biz:4438/api/topup/index.php`,
-  headers: {
-    'content-type': 'application/json',
-  },
-});
+import Axios, { AxiosInstance } from 'axios';
 
 type TopupParams = {
   phone: string;
@@ -18,10 +11,17 @@ type TopupParams = {
 export class VietGuy {
   private _username?: string;
   private _password?: string;
+  private _api: AxiosInstance;
 
   constructor(username?: string, password?: string) {
     this._username = username;
     this._password = password;
+    this._api = Axios.create({
+      baseURL: `https://cloudsms2.vietguys.biz:4438/api/topup/index.php`,
+      headers: {
+        'content-type': 'application/json',
+      },
+    });
   }
 
   async topup(props: TopupParams) {
@@ -34,7 +34,7 @@ export class VietGuy {
     const pwd = password || this._password;
     if (!u || !pwd) throw Error('Missing username or password');
 
-    const result = await api
+    const result = await this._api
       .get(`/`, {
         params: { u, pwd, amount, tid, phone: parsedPhone },
       })
