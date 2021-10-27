@@ -1,6 +1,6 @@
 import { VietGuy } from '../src';
 test('topup', async () => {
-  const vietguy = new VietGuy('username', 'password');
+  const vietguy = new VietGuy('username', 'passwordd');
 
   const result = await vietguy
     .topup({
@@ -9,10 +9,10 @@ test('topup', async () => {
       tid: 'duong-test',
     })
     .catch(err => {
-      console.log('call error', err.message);
+      console.log('call error', err);
     });
 
-  console.log('result');
+  console.log('result', result);
 
-  expect(result).toBeDefined();
+  expect(result).toEqual('00');
 });

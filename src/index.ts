@@ -1,5 +1,4 @@
-import Axios, { AxiosInstance } from 'axios';
-import qs from 'qs';
+import request from 'request-promise';
 
 type TopupParams = {
   phone: string;
@@ -12,17 +11,10 @@ type TopupParams = {
 export class VietGuy {
   private _username?: string;
   private _password?: string;
-  private _api: AxiosInstance;
 
   constructor(username?: string, password?: string) {
     this._username = username;
     this._password = password;
-    this._api = Axios.create({
-      baseURL: `https://cloudsms2.vietguys.biz:4438/api/topup/index.php`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
   }
 
   async topup(props: TopupParams) {
@@ -35,21 +27,24 @@ export class VietGuy {
     const pwd = password || this._password;
     if (!u || !pwd) throw Error('Missing username or password');
 
-    const data = {
-      u: u,
-      pwd: pwd,
-      phone: parsedPhone,
-      amount: amount,
-      tid: tid,
+    const requestOption = {
+      method: 'POST',
+      url: 'https://cloudsms2.vietguys.biz:4438/api/topup/index.php',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      form: {
+        u: u,
+        pwd: pwd,
+        phone: parsedPhone,
+        amount: amount,
+        tid: tid,
+      },
     };
-    const result = await this._api
-      .post('/', qs.stringify(data))
-      .then(res => res.data);
 
-    if (result !== '00') {
-      console.log('topup failed', result);
-      throw new Error(`Topup failed`);
-    }
+    let result = await request(requestOption);
+
+    if (result !== '00') throw new Error(`Topup failed: ${result}`);
     return result;
   }
 }
