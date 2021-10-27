@@ -1,4 +1,5 @@
 import Axios, { AxiosInstance } from 'axios';
+import qs from 'qs';
 
 type TopupParams = {
   phone: string;
@@ -19,7 +20,7 @@ export class VietGuy {
     this._api = Axios.create({
       baseURL: `https://cloudsms2.vietguys.biz:4438/api/topup/index.php`,
       headers: {
-        'content-type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
   }
@@ -34,10 +35,15 @@ export class VietGuy {
     const pwd = password || this._password;
     if (!u || !pwd) throw Error('Missing username or password');
 
+    const data = {
+      u: u,
+      pwd: pwd,
+      phone: parsedPhone,
+      amount: amount,
+      tid: tid,
+    };
     const result = await this._api
-      .get(`/`, {
-        params: { u, pwd, amount, tid, phone: parsedPhone },
-      })
+      .post('/', qs.stringify(data))
       .then(res => res.data);
 
     if (result !== '00') {

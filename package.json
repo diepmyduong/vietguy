@@ -46,6 +46,7 @@
   ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^6.0.3",
+    "@types/qs": "^6.9.7",
     "husky": "^7.0.4",
     "size-limit": "^6.0.3",
     "tsdx": "^0.14.1",
@@ -53,6 +54,7 @@
     "typescript": "^4.4.4"
   },
   "dependencies": {
-    "axios": "^0.24.0"
+    "axios": "^0.24.0",
+    "qs": "^6.10.1"
   }
 }
